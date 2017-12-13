@@ -1,0 +1,5 @@
+= Code Valet Pipeline Library
+
+This is a
+link:https://jenkins.io/doc/book/pipeline/shared-libraries[Shared Library]
+which provides a number of steps for a `Jenkinsfile` executing in Code Valet.
