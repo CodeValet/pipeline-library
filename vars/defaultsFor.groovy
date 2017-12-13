@@ -14,6 +14,9 @@ def call(String platform) {
                 stages {
                     stage('Prepare') {
                         steps {
+                            if (true) {
+                                echo 'lol'
+                            }
                             sh 'mvn -B clean '
                         }
                     }
