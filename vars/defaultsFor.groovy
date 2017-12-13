@@ -6,22 +6,23 @@ def call(String platform) {
     switch (platform) {
         case 'java':
             pipeline {
-                agent {
-                    docker {
-                    image 'maven:3-alpine'
-                    }
-                }
+                agent none
                 stages {
-                    stage('Prepare') {
-                        steps {
-                            sh 'mvn -B clean '
-                        }
-                    }
                     stage('Test') {
-                        steps {
-                            sh 'mvn test -B'
-                            junit testResults: '**/surefire-reports/**/*.xml', allowEmptyResults: true
-                            archiveArtifacts artifacts: '**/*.jar', fingerprint: true
+                        failFast true
+                        parallel {
+                            stage('Linux') {
+                                agent { docker 'maven:3-alpine' }
+                                steps {
+                                    sh 'mvn test -B'
+                                }
+                                post {
+                                    always {
+                                        junit testResults: '**/surefire-reports/**/*.xml', allowEmptyResults: true
+                                        archiveArtifacts artifacts: '**/*.jar', fingerprint: true
+                                    }
+                                }
+                            }
                         }
                     }
                 }
