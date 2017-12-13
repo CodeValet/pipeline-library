@@ -5,7 +5,27 @@
 def call(String platform) {
     switch (platform) {
         case 'java':
-            echo 'Hello World'
+            pipeline {
+                agent {
+                    docker {
+                    image 'maven:3-alpine'
+                    }
+                }
+                stages {
+                    stage('Prepare') {
+                        steps {
+                            sh 'mvn -B clean '
+                        }
+                    }
+                    stage('Test') {
+                        steps {
+                            sh 'mvn test -B'
+                            junit testResults: '**/surefire-reports/**/*.xml', allowEmptyResults: true
+                            archiveArtifacts artifacts: '**/*.jar', fingerprint: true
+                        }
+                    }
+                }
+            }
             break
 
         default:
