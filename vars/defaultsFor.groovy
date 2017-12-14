@@ -15,7 +15,19 @@ def call(String platform) {
                     stage('Test') {
                         failFast true
                         parallel {
-                            stage('Linux') {
+                            stage('Debian Linux') {
+                                agent { docker 'maven:3-slim' }
+                                steps {
+                                    sh 'mvn test -B'
+                                }
+                                post {
+                                    always {
+                                        junit testResults: '**/surefire-reports/**/*.xml', allowEmptyResults: true
+                                        archiveArtifacts artifacts: '**/*.jar', fingerprint: true
+                                    }
+                                }
+                            }
+                            stage('Alpine Linux') {
                                 agent { docker 'maven:3-alpine' }
                                 steps {
                                     sh 'mvn test -B'
@@ -30,13 +42,7 @@ def call(String platform) {
                             stage('FreeBSD 11') {
                                 agent { label 'freebsd' }
                                 steps {
-                                    sh 'mvn test -B'
-                                }
-                                post {
-                                    always {
-                                        junit testResults: '**/surefire-reports/**/*.xml', allowEmptyResults: true
-                                        archiveArtifacts artifacts: '**/*.jar', fingerprint: true
-                                    }
+                                    echo 'Code Valet does not currently support Maven on FreeBSD'
                                 }
                             }
                         }
