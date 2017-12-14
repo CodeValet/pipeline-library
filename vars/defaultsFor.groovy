@@ -12,41 +12,36 @@ def call(String platform) {
                     timeout(time: 1, unit: 'HOURS')
                 }
                 stages {
-                    stage('Test') {
-                        failFast true
-                        parallel {
-                            stage('Debian Linux') {
-                                agent { docker 'maven:slim' }
-                                steps {
-                                    checkout scm
-                                    sh 'mvn test -B'
-                                }
-                                post {
-                                    always {
-                                        junit testResults: '**/surefire-reports/**/*.xml', allowEmptyResults: true
-                                        archiveArtifacts artifacts: '**/*.jar', fingerprint: true
-                                    }
-                                }
+                    stage('Debian Linux') {
+                        agent { docker 'maven:slim' }
+                        steps {
+                            checkout scm
+                            sh 'mvn test -B'
+                        }
+                        post {
+                            always {
+                                junit testResults: '**/surefire-reports/**/*.xml', allowEmptyResults: true
+                                archiveArtifacts artifacts: '**/*.jar', fingerprint: true
                             }
-                            stage('Alpine Linux') {
-                                agent { docker 'maven:3-alpine' }
-                                steps {
-                                    checkout scm
-                                    sh 'mvn test -B'
-                                }
-                                post {
-                                    always {
-                                        junit testResults: '**/surefire-reports/**/*.xml', allowEmptyResults: true
-                                        archiveArtifacts artifacts: '**/*.jar', fingerprint: true
-                                    }
-                                }
+                        }
+                    }
+                    stage('Alpine Linux') {
+                        agent { docker 'maven:3-alpine' }
+                        steps {
+                            checkout scm
+                            sh 'mvn test -B'
+                        }
+                        post {
+                            always {
+                                junit testResults: '**/surefire-reports/**/*.xml', allowEmptyResults: true
+                                archiveArtifacts artifacts: '**/*.jar', fingerprint: true
                             }
-                            stage('FreeBSD 11') {
-                                agent { label 'freebsd' }
-                                steps {
-                                    echo 'Code Valet does not currently support Maven on FreeBSD'
-                                }
-                            }
+                        }
+                    }
+                    stage('FreeBSD 11') {
+                        agent { label 'freebsd' }
+                        steps {
+                            echo 'Code Valet does not currently support Maven on FreeBSD'
                         }
                     }
                 }
