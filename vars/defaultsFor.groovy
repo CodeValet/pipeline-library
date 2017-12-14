@@ -18,6 +18,7 @@ def call(String platform) {
                             stage('Debian Linux') {
                                 agent { docker 'maven:slim' }
                                 steps {
+                                    checkout scm
                                     sh 'mvn test -B'
                                 }
                                 post {
@@ -30,6 +31,7 @@ def call(String platform) {
                             stage('Alpine Linux') {
                                 agent { docker 'maven:3-alpine' }
                                 steps {
+                                    checkout scm
                                     sh 'mvn test -B'
                                 }
                                 post {
