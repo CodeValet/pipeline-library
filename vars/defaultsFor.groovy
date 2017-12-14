@@ -16,7 +16,7 @@ def call(String platform) {
                         failFast true
                         parallel {
                             stage('Debian Linux') {
-                                agent { docker 'maven:3-slim' }
+                                agent { docker 'maven:slim' }
                                 steps {
                                     sh 'mvn test -B'
                                 }
