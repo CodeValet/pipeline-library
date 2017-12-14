@@ -4,8 +4,8 @@
 
 def call(String platform) {
     switch (platform) {
-        case 'java':
-            defaultsForJava()
+        case 'maven':
+            defaultsForMaven()
             return
             break
 
@@ -15,7 +15,7 @@ def call(String platform) {
     }
 }
 
-void defaultsForJava() {
+void defaultsForMaven() {
     pipeline {
         agent none
         stages {
